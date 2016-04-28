@@ -1,5 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe HostUser, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  # TEST ASSOCIATIONS
+  it {should have_many(:forums)}
+
+  # TEST FOR PRESENCE OF DB COLUMNS
 end

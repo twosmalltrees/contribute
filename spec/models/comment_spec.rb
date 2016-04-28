@@ -1,5 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  # TEST ASSOCIATIONS
+  it {should belong_to(:contributor)}
+  it {should belong_to(:forum)}
+  it {should have_many(:flags)}
+  it {should have_many(:reviews)}
+
+  # TEST FOR PRESENCE OF DB COLUMNS
+  it {should have_db_column( :body_text )}
 end
