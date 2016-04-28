@@ -4,4 +4,9 @@ class Contributor < ActiveRecord::Base
   has_many :flags
   has_many :reviews
   has_many :upvotes
+
+  validates :username, presence: true, uniqueness: true
+  validates :email, uniqueness: true
+  validates :reputation, presence: true
+  validates :blocked, presence: true
 end
