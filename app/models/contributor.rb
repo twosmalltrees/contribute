@@ -3,4 +3,5 @@ class Contributor < ActiveRecord::Base
   has_many :comments
   has_many :flags
   has_many :reviews
+  has_many :upvotes
 end

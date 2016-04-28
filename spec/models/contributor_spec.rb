@@ -8,6 +8,7 @@ RSpec.describe Contributor, type: :model do
   it {should have_many(:comments)}
   it {should have_many(:flags)}
   it {should have_many(:reviews)}
+  it {should have_many(:upvotes)}
 
   # TEST FOR PRESENCE OF DB COLUMNS
 
