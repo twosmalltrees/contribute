@@ -6,5 +6,7 @@ RSpec.describe Flag, type: :model do
   it {should belong_to(:comment)}
 
   # TEST FOR PRESENCE OF DB COLUMNS
+  it {should have_db_column(:contributor_id)}
+  it {should have_db_column(:comment_id)}
 
 end

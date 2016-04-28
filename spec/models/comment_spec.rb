@@ -8,5 +8,10 @@ RSpec.describe Comment, type: :model do
   it {should have_many(:reviews)}
 
   # TEST FOR PRESENCE OF DB COLUMNS
-  it {should have_db_column( :body_text )}
+  it {should have_db_column(:contributor_id)}
+  it {should have_db_column(:forum_id)}
+  it {should have_db_column(:body_text)}
+
+  
+
 end

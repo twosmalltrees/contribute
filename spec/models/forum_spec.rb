@@ -6,5 +6,6 @@ RSpec.describe Forum, type: :model do
   it {should have_many(:comments)}
 
   # TEST FOR PRESENCE OF DB COLUMNS
+  it {should have_db_column(:host_user_id)}
 
 end
