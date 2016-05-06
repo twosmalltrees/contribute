@@ -28,6 +28,9 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'devise'
 
+gem 'bootstrap-sass', '~> 3.3.6'
+
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -41,6 +44,8 @@ group :development, :test do
   gem 'rspec-rails'
 
   gem 'shoulda-matchers'
+
+  gem 'faker'
 end
 
 group :development do

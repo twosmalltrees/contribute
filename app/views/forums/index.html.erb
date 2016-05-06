@@ -1,0 +1,22 @@
+<h2 class="text-center">Your Forums</h2>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Root Domain</th>
+      <th>Shortname</th>
+      <th>Recent Activity</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @forums.each do |forum| %>
+      <tr>
+        <td><%= forum.root_domain %></td>
+        <td><%= forum.forum_shortname %></td>
+        <td>#</td>
+        <td>view details</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

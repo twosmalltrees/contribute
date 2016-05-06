@@ -1,0 +1,24 @@
+<h2 class="text-center">Contributor Sign In</h2>
+
+<%= form_tag(contributor_sign_in_path, {class: "form-horizontal"}) do %>
+
+  <div class="form-group">
+    <%= label_tag :username_or_email, 'Username or Email', class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= text_field_tag :username_or_email, nil, {class: 'form-control'}  %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :password, 'Password', class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= password_field_tag :password, nil, {class: 'form-control'}  %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-7">
+      <%= submit_tag 'Login', class: 'btn btn-default' %>
+    </div>
+  </div>
+<% end %>

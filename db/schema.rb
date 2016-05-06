@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160501024524) do
+ActiveRecord::Schema.define(version: 20160504133049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,8 +40,11 @@ ActiveRecord::Schema.define(version: 20160501024524) do
   end
 
   create_table "discussions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "forum_id",          null: false
+    t.string   "page_url"
+    t.string   "unique_identifier", null: false
   end
 
   create_table "flags", force: :cascade do |t|
@@ -52,15 +55,16 @@ ActiveRecord::Schema.define(version: 20160501024524) do
   end
 
   create_table "forums", force: :cascade do |t|
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.integer  "host_user_id", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "host_user_id",    null: false
+    t.string   "root_domain",     null: false
+    t.string   "forum_shortname", null: false
   end
 
   create_table "host_users", force: :cascade do |t|
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
-    t.string   "password_digest",                     null: false
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"

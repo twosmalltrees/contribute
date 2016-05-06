@@ -1,0 +1,46 @@
+
+<% if @contributor.errors.any? %>
+  <ol>
+    <% @contributor.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ol>
+<% end %>
+
+<%= form_for @contributor, html: { class: "form-horizontal"} do |f| %>
+
+  <div class="form-group">
+    <%= f.label :username, class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= f.text_field :username, class: "form-control",  autofocus: true, required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email, class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= f.email_field :email, class: "form-control",  autofocus: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password, class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= f.password_field :password, class: "form-control",  autofocus: true, required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password_confirmation, class: 'col-sm-2 col-sm-offset-1 control-label' %>
+    <div class="col-sm-7">
+      <%= f.text_field :password_confirmation, class: "form-control",  autofocus: true, required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-7">
+      <%= f.submit "Sign up", class: 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>
