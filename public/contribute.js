@@ -75,6 +75,12 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
 Contribute.app.Review = Contribute.Backbone.Model.extend({
   urlRoot: 'http://localhost:3000/reviews',
 
+  initialize: function() {
+    this.on("change", function() {
+      Contribute.app.reviewView.render();
+    });
+  },
+
   defaults: {
     review_in_progress: false,
     comment_id: null,
@@ -189,6 +195,12 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       if (response.review_required === true && response.contributor_signed_in === true) {
         // If commununity moderation contribution required, create new Review view.
         console.log("Congratulations, you have been selected to conduct a review!");
+        Contribute.app.review.set({
+          review_in_progress: true,
+          comment_id: response.comment_id,
+          body_text: response.comment_body
+        });
+
       } else if (response.review_required === false && response.contributor_signed_in === true) {
         // If no community moderation contribution required, will submit the comment.
         Contribute.app.composeView.submitComment();
@@ -206,13 +218,34 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 });
 
 Contribute.app.ReviewView = Contribute.Backbone.View.extend({
-  el: '#review_container',
+
+  el: '#review-container',
 
   events: {
 
   },
 
+  initialize: function() {
+    this.render();
+  },
+
+  render: function() {
+    this.$el.html('');
+    var template = _.template( Contribute.$("#reviewViewTemplate").html() );
+    this.$el.html( template(this.model.toJSON()) );
+    this.toggleVisibility();
+  },
+
+  toggleVisibility: function() {
+    if (this.model.get("review_in_progress") === false) {
+      this.$el.hide();
+    } else {
+      this.$el.toggle(400);
+    }
+  }
+
 });
+
 
 Contribute.app.ProfileView = Contribute.Backbone.View.extend({
 

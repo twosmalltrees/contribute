@@ -17,6 +17,8 @@ var Contribute = (function(window, undefined){
       '</div>' +
       '<div id="compose-container">' +
       '</div>' +
+      '<div id="review-container">' +
+      '</div>' +
       '<div id="comments-container">' +
       '</div>'
     },
@@ -57,6 +59,21 @@ var Contribute = (function(window, undefined){
           '<label>Password</label><input type="password" id="contribute-password-field">' +
           '<button type="submit" id="contribute-sign-in-button">Sign In</button>' +
       '</form>'
+    },
+    {
+      name: 'reviewViewTemplate',
+      html:
+      '<div id="contribute-review-body">' +
+      '{{= body_text }}' +
+      '</div>' +
+      '<div id="contribute-review-options">' +
+        '<form id="contribute-review-form">' +
+          '<input type="radio" name="reviewOutcome" value="racism"> Racist' +
+          '<input type="radio" name="reviewOutcome" value="sexism"> Sexist' +
+          '<input type="radio" name="reviewOutcome" value="acceptable"> Acceptable' +
+          '<button type="submit">Submit Review</button>' +
+        '</form>' +
+      '</div>'
     }
   ];
 
