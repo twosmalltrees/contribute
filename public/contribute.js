@@ -77,6 +77,7 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
 
   initialize: function() {
     this.on("change", function() {
+      console.log("Review model change function called");
       Contribute.app.reviewView.render();
     });
   },
@@ -84,15 +85,49 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
   defaults: {
     review_in_progress: false,
     comment_id: null,
-    body_text: null
+    body_text: null,
+    review_result: null
+  },
+
+  submitReview: function() {
+    console.log("review submitted");
+    // Submit the review
+    // Need to find some way of verifying authenticity of submitted reviews...
+    Contribute.$.ajax({
+      url: 'http://localhost:3000/submit_review',
+      type: 'POST',
+      data: {
+        comment_id: this.comment_id,
+        review_result: this.review_result,
+      },
+      xhrFields: {
+         withCredentials: true
+      }
+    }).done(function() {
+      // When review sucessfully submitted, then submit the contributors comment.
+      console.log("was this succssessful?");
+      // Reset review to defaults
+      Contribute.app.review.set({
+          review_in_progress: false,
+          comment_id: null,
+          body_text: null,
+          review_result: null
+        });
+      // Submit the comment
+      Contribute.app.composeView.submitComment();
+    }).fail(function() {
+      // What if review submission fails?
+      console.log("review submit...ahhh failed");
+    });
   }
+
 
 });
 
 Contribute.app.Comment = Contribute.Backbone.Model.extend({
   urlRoot: 'http://localhost:3000/comments',
   defaults: {
-
+    body_text: null
   }
 });
 
@@ -153,7 +188,7 @@ Contribute.app.CommentsView = Contribute.Backbone.View.extend({
 
   addOneComment: function(comment) {
     comment = new Contribute.app.CommentView({ model: comment });
-    this.$el.append(comment.render().el);
+    this.$el.prepend(comment.render().el);
   },
 
   addAllComments: function() {
@@ -212,6 +247,23 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 
   submitComment: function() {
     // Actually send off comment submission request.
+    var bodyText = Contribute.$('#contribute-comment-field').val();
+    var newComment = new Contribute.app.Comment({
+      body_text: bodyText
+    });
+    console.log("made a new comment to submit");
+    Contribute.$.ajax({
+      url: 'http://localhost:3000/comments',
+      type: 'POST',
+      data: newComment.attributes,
+      xhrFields: {
+         withCredentials: true
+      }
+    }).done(function() {
+      Contribute.app.commentsView.addOneComment(newComment);
+    }).fail(function() {
+
+    });
   },
 
 
@@ -222,7 +274,7 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
   el: '#review-container',
 
   events: {
-
+    "click #contribute-submit-review-button" : "submitButtonPress"
   },
 
   initialize: function() {
@@ -232,7 +284,7 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
   render: function() {
     this.$el.html('');
     var template = _.template( Contribute.$("#reviewViewTemplate").html() );
-    this.$el.html( template(this.model.toJSON()) );
+    this.$el.html( template( this.model.toJSON() ) );
     this.toggleVisibility();
   },
 
@@ -241,6 +293,18 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
       this.$el.hide();
     } else {
       this.$el.toggle(400);
+    }
+  },
+
+  submitButtonPress: function(event) {
+    event.preventDefault();
+    if (Contribute.$('#contribute-review-outcome-select').val() === null) {
+      // Some action to prompt the user to select an option
+      console.log("You haven't entered any input");
+    } else {
+      // Otherwise call submitReview
+      this.model.set( 'review_result', Contribute.$('#contribute-review-outcome-select').val() );
+      this.model.submitReview();
     }
   }
 

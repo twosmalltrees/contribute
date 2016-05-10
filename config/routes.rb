@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   delete '/remote_sign_in', to: 'sessions#destroy_remote'
   get '/remote_current_contributor', to: 'sessions#remote_current_contributor'
   delete '/sign_in', to: 'sessions#destroy', as: 'destroy_contributor_session'
+  post '/submit_review', to: 'reviews#create'
 
   resources :comments
 

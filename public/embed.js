@@ -68,10 +68,13 @@ var Contribute = (function(window, undefined){
       '</div>' +
       '<div id="contribute-review-options">' +
         '<form id="contribute-review-form">' +
-          '<input type="radio" name="reviewOutcome" value="racism"> Racist' +
-          '<input type="radio" name="reviewOutcome" value="sexism"> Sexist' +
-          '<input type="radio" name="reviewOutcome" value="acceptable"> Acceptable' +
-          '<button type="submit">Submit Review</button>' +
+          '<select id="contribute-review-outcome-select" >' +
+            '<option disabled selected>Select an option</option>' +
+            '<option value="approved">Approved</option>' +
+            '<option value="rejected-1">Racial Vilification</option>' +
+            '<option value="rejected-2">Sexual Harassment</option>' +
+          '</select>' +
+          '<button type="submit" id="contribute-submit-review-button">Submit and Post Your Comment</button>' +
         '</form>' +
       '</div>'
     }

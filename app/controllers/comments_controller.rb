@@ -1,7 +1,9 @@
 class CommentsController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token, only: [:create]
+
   def index
-   @comments = Comment.take(5)
+   @comments = Discussion.find_by_page_url( request.referer ).comments
    render json: @comments
   end
 
@@ -28,8 +30,20 @@ class CommentsController < ApplicationController
   end
 
   def create
+    puts "AND HERE IT IS AGAIN"
+    puts params
+    puts request.referer
+    currentDiscussion = Discussion.find_by_page_url( request.referer )
+    puts currentDiscussion.comments.count
+    puts @current_contributor
+    comment = Comment.new(contributor_id: @current_contributor.id, discussion_id: currentDiscussion.id, body_text: params[:body_text])
+    # MORE LOGIC TO DETERMINE STATUS ETC BASED ON USERS REPUTATION...
+    if comment.save
+      render json: comment
+    else
+      render json: {status: "save failed"}
+    end
   end
-
 end
 
 # create_table "comments", force: :cascade do |t|
