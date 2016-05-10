@@ -1,0 +1,20 @@
+<h1 class="text-center"><%= @forum.root_domain %></h1>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Discussion Name</th>
+      <th>Page URL</th>
+      <th>Unique ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @discussions.each do |discussion| %>
+      <tr>
+        <td><%= discussion.name %></td>
+        <td><%= discussion.page_url %></td>
+        <td><%= discussion.unique_identifier %></td>
+        <td><%= link_to "View Discussion", forum_discussion_path( @forum, discussion ) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

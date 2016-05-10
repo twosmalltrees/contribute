@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160504133049) do
+ActiveRecord::Schema.define(version: 20160506035207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20160504133049) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.integer  "contributor_id",                     null: false
-    t.integer  "forum_id",                           null: false
+    t.integer  "discussion_id",                      null: false
     t.boolean  "pending",        default: true
     t.boolean  "removed",        default: false
     t.string   "status",         default: "pending"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20160504133049) do
     t.string   "forum_id",          null: false
     t.string   "page_url"
     t.string   "unique_identifier", null: false
+    t.string   "name"
   end
 
   create_table "flags", force: :cascade do |t|

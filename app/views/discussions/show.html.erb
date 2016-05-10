@@ -1,0 +1,12 @@
+<% @forum %>
+
+<% @discussion.comments.each do |comment| %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Posted <%= comment.created_at.strftime("%H:%M, %B %-d %Y") %>
+    </div>
+    <div class="panel-body">
+      <%= comment.body_text %>
+    </div>
+  </div>
+<% end %>

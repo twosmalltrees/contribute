@@ -11,9 +11,18 @@ Rails.application.routes.draw do
   get '/sign_in_prompt', to: 'static_pages#sign_in_prompt', as: 'sign_in_prompt'
   get '/sign_in', to: 'sessions#new', as: 'contributor_sign_in'
   post '/sign_in', to: 'sessions#create', as: 'new_contributor_session'
+  get '/request_submit_permission', to: 'comments#request_submit_permission'
+  post '/remote_sign_in', to: 'sessions#create_remote'
+  delete '/remote_sign_in', to: 'sessions#destroy_remote'
+  get '/remote_current_contributor', to: 'sessions#remote_current_contributor'
   delete '/sign_in', to: 'sessions#destroy', as: 'destroy_contributor_session'
 
-  resources :forums, only: [:index]
+  resources :comments
+
+  resources :forums do
+    resources :discussions
+  end
+
   resources :contributors, only: [:new, :create]
 
 end

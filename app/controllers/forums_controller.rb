@@ -6,4 +6,9 @@ class ForumsController < ApplicationController
     @forums = current_host_user.forums
   end
 
+  def show
+    @forum = current_host_user.forums.find(params[:id])
+    @discussions = @forum.discussions
+  end
+
 end

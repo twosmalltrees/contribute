@@ -11,12 +11,12 @@
   </thead>
   <tbody>
     <% @forums.each do |forum| %>
-      <tr>
-        <td><%= forum.root_domain %></td>
-        <td><%= forum.forum_shortname %></td>
-        <td>#</td>
-        <td>view details</td>
-      </tr>
+        <tr>
+          <td><%= forum.root_domain %></td>
+          <td><%= forum.forum_shortname %></td>
+          <td></td>
+          <td><%= link_to "View Details", forum_path( forum ) %></td>
+        </tr>
     <% end %>
   </tbody>
 </table>

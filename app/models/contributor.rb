@@ -7,7 +7,6 @@ class Contributor < ActiveRecord::Base
   has_many :upvotes
   #
   validates :username, presence: true
-  validates :email, presence: true
   validates :password, length: { minimum: 6 }
   validates :reputation, presence: true
 end

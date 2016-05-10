@@ -25,13 +25,27 @@ test_contributor_username_only.save
   contributor.save
 end
 
+# Store reference to all contributors for use in generating comments later
+allContributors = Contributor.all
 
-# Create test admin users
+
+# Create specific Test Host Users that I know the details of...
 admin_user = HostUser.new(email: 'admin@example.com', password: "password")
 admin_user.save
 4.times do
   forum = Forum.new(root_domain: Faker::Internet.domain_name, forum_shortname: Faker::App.name, host_user_id: admin_user.id)
   forum.save
+  # Create some discussions
+  Random.rand(2..20).times do
+    discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain), unique_identifier: Faker::Code.isbn)
+    discussion.save
+
+    # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
+    Random.rand(0..20).times do
+      comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph)
+      comment.save
+    end
+  end
 end
 
 # Create bulk Host Users and associated Formums/Discussions
@@ -39,13 +53,18 @@ end
   user = HostUser.new(email: Faker::Internet.safe_email, password: "password")
   user.save
   # Create Forums for each User
-  Random.rand(1..8).times do
+  Random.rand(1..3).times do
     forum = Forum.new(root_domain: Faker::Internet.domain_name, forum_shortname: Faker::App.name, host_user_id: user.id)
     forum.save
     # Create Discussions for each Forum
     Random.rand(2..20).times do
       discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain), unique_identifier: Faker::Code.isbn)
       discussion.save
+      # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
+      Random.rand(0..20).times do
+        comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph)
+        comment.save
+      end
     end
   end
 end

@@ -30,6 +30,9 @@ gem 'devise'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
+gem 'rack-cors', :require => 'rack/cors'
+
+gem 'pry-rails'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
