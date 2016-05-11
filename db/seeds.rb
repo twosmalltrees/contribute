@@ -42,7 +42,7 @@ admin_user.save
 
     # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
     Random.rand(0..20).times do
-      comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph)
+      comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
       comment.save
     end
   end
@@ -62,7 +62,7 @@ end
       discussion.save
       # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
       Random.rand(0..20).times do
-        comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph)
+        comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
         comment.save
       end
     end
