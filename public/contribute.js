@@ -5,12 +5,12 @@ Contribute.app.AppRouter = Contribute.Backbone.Router.extend({
 });
 
 Contribute.app.Session = Contribute.Backbone.Model.extend({
-  urlRoot: 'http://localhost:3000/sign_in',
+  urlRoot: 'https://contribute-app.herokuapp.com/sign_in',
 
   requestAuth: function(username_or_email, password) {
     // jQuery namespaced to avoid possible conflicts with 3rd party sites.
     Contribute.$.ajax({
-      url: 'http://localhost:3000/remote_sign_in',
+      url: 'https://contribute-app.herokuapp.com/remote_sign_in',
       type: 'POST',
       data: {
         username_or_email: username_or_email,
@@ -26,7 +26,7 @@ Contribute.app.Session = Contribute.Backbone.Model.extend({
 
   destroySession: function() {
     Contribute.$.ajax({
-      url: 'http://localhost:3000/remote_sign_in',
+      url: 'https://contribute-app.herokuapp.com/remote_sign_in',
       type: 'POST',
       dataType: "json",
       data: {"_method":"delete"},
@@ -41,7 +41,7 @@ Contribute.app.Session = Contribute.Backbone.Model.extend({
 
 Contribute.app.Contributor = Contribute.Backbone.Model.extend({
 
-  urlRoot: 'http://localhost:3000/remote_current_contributor',
+  urlRoot: 'https://contribute-app.herokuapp.com/remote_current_contributor',
 
   defaults: {
     is_signed_in: false
@@ -54,7 +54,7 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
   getCurrentContributor: function() {
     var that = this;
     Contribute.$.ajax({
-      url: 'http://localhost:3000/remote_current_contributor',
+      url: 'https://contribute-app.herokuapp.com/remote_current_contributor',
       type: 'GET',
       xhrFields: {
          withCredentials: true
@@ -73,7 +73,7 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
 });
 
 Contribute.app.Review = Contribute.Backbone.Model.extend({
-  urlRoot: 'http://localhost:3000/reviews',
+  urlRoot: 'https://contribute-app.herokuapp.com/reviews',
 
   initialize: function() {
     this.on("change", function() {
@@ -96,7 +96,7 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
     // Submit the review
     // Need to find some way of verifying authenticity of submitted reviews...
     Contribute.$.ajax({
-      url: 'http://localhost:3000/submit_review',
+      url: 'https://contribute-app.herokuapp.com/submit_review',
       type: 'POST',
       data: {
         comment_id: Contribute.app.review.get("comment_id"),
@@ -127,14 +127,14 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
 });
 
 Contribute.app.Comment = Contribute.Backbone.Model.extend({
-  urlRoot: 'http://localhost:3000/comments',
+  urlRoot: 'https://contribute-app.herokuapp.com/comments',
   defaults: {
     body_text: null
   }
 });
 
 Contribute.app.Comments = Contribute.Backbone.Collection.extend({
-  url: 'http://localhost:3000/comments',
+  url: 'https://contribute-app.herokuapp.com/comments',
 
   model: Contribute.app.Comment,
 
@@ -232,7 +232,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
     }
 
     Contribute.$.ajax({
-      url: 'http://localhost:3000/request_submit_permission',
+      url: 'https://contribute-app.herokuapp.com/request_submit_permission',
       type: 'GET',
       xhrFields: {
          withCredentials: true
@@ -266,7 +266,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 
     console.log("made a new comment to submit");
     Contribute.$.ajax({
-      url: 'http://localhost:3000/comments',
+      url: 'https://contribute-app.herokuapp.com/comments',
       type: 'POST',
       data: newComment.attributes,
       xhrFields: {
@@ -309,7 +309,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       backgroundColor: 'rgba(4, 4, 4, 0.05)'
     });
     var $loadingGif = Contribute.$('<img>');
-    $loadingGif.attr('src', 'http://localhost:3000/loader.gif');
+    $loadingGif.attr('src', 'https://contribute-app.herokuapp.com/loader.gif');
     $loadingGif.attr('id', 'contribute-loading-gif');
     $loadingGif.css({
       position: 'absolute',

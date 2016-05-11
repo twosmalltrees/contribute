@@ -54,7 +54,7 @@ var Contribute = (function(window, undefined){
       html:
       '<div class="contribute-minor-divider"></div>' +
       '<span class="contribute-comment-meta"><span class="contribute-strong-red">{{= contributor.username }}</span><span> | {{ if (created_at_readable) }}{{= created_at_readable }}</span></span>' +
-      '<span><img src="http://localhost:3000/chat.svg"></span>' +
+      '<span><img src="https://contribute-app.herokuapp.com/chat.svg"></span>' +
       '<div class="contribute-comment-body">' +
         '{{= body_text }}' +
       '</div>'
@@ -96,8 +96,8 @@ var Contribute = (function(window, undefined){
   ];
 
   var loadSupportingFiles = function(callback) {
-    loadScript('http://localhost:3000/jquery.js', function() {
-      loadScript('http://localhost:3000/underscore+backbone.js', callback);
+    loadScript('https://contribute-app.herokuapp.com/jquery.js', function() {
+      loadScript('https://contribute-app.herokuapp.com/underscore+backbone.js', callback);
     });
   };
 
@@ -121,7 +121,7 @@ var Contribute = (function(window, undefined){
   };
 
   loadSupportingFiles(function() {
-    loadScript('http://localhost:3000/contribute.js', function() {
+    loadScript('https://contribute-app.herokuapp.com/contribute.js', function() {
         var div = document.createElement('div');
         Contribute.$(div).attr('id', 'contribute-main');
         var appendTo = document.getElementById('contribute-embed');
