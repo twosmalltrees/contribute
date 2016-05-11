@@ -1,8 +1,15 @@
 class ReviewsController < ApplicationController
 
-  def create
+  skip_before_filter :verify_authenticity_token, only: [:create]
 
-    render json: {this_will:"respond to a review submission"}
+
+  def create
+    review = Review.new(contributor_id: @current_contributor.id, comment_id: params[:comment_id], result: params[:review_result] )
+    if review.save()
+      render json: review
+    else
+      render json: {status: "failure"}
+    end
   end
 
   # create_table "reviews", force: :cascade do |t|

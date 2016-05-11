@@ -90,15 +90,17 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
   },
 
   submitReview: function() {
-    console.log("review submitted");
+    console.log(this.attributes);
+
+
     // Submit the review
     // Need to find some way of verifying authenticity of submitted reviews...
     Contribute.$.ajax({
       url: 'http://localhost:3000/submit_review',
       type: 'POST',
       data: {
-        comment_id: this.comment_id,
-        review_result: this.review_result,
+        comment_id: Contribute.app.review.get("comment_id"),
+        review_result: Contribute.app.review.get("review_result"),
       },
       xhrFields: {
          withCredentials: true
@@ -180,7 +182,7 @@ Contribute.app.CommentView = Contribute.Backbone.View.extend({
 
 
 Contribute.app.CommentsView = Contribute.Backbone.View.extend({
-  el: '#comments-container',
+  el: '#contribute-comments-container',
 
   render: function() {
     this.addAllComments();
@@ -201,7 +203,7 @@ Contribute.app.CommentsView = Contribute.Backbone.View.extend({
 });
 
 Contribute.app.ComposeView = Contribute.Backbone.View.extend({
-  el: '#compose-container',
+  el: '#contribute-compose-container',
 
   events: {
     "click #contribute-submit-button" : "requestSubmitPermission"
@@ -220,6 +222,15 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
   // Queries Contribute to check there is a current user session on the server side, and also
   // requests moderation of a community comment if required.
   requestSubmitPermission: function() {
+
+    // If comment is completely empty, then return.
+    var bodyText = Contribute.$('#contribute-comment-field').text();
+    console.log(bodyText);
+    if (bodyText.trim().length === 0) {
+      Contribute.$('#contribute-comment-field').html('');
+      return;
+    }
+
     Contribute.$.ajax({
       url: 'http://localhost:3000/request_submit_permission',
       type: 'GET',
@@ -230,12 +241,13 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       if (response.review_required === true && response.contributor_signed_in === true) {
         // If commununity moderation contribution required, create new Review view.
         console.log("Congratulations, you have been selected to conduct a review!");
+        Contribute.app.composeView.hideSubmitButton();
+        Contribute.app.composeView.disableCommentEditing();
         Contribute.app.review.set({
           review_in_progress: true,
           comment_id: response.comment_id,
           body_text: response.comment_body
         });
-
       } else if (response.review_required === false && response.contributor_signed_in === true) {
         // If no community moderation contribution required, will submit the comment.
         Contribute.app.composeView.submitComment();
@@ -247,10 +259,11 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 
   submitComment: function() {
     // Actually send off comment submission request.
-    var bodyText = Contribute.$('#contribute-comment-field').val();
+    var bodyText = Contribute.$('#contribute-comment-field').text();
     var newComment = new Contribute.app.Comment({
       body_text: bodyText
     });
+
     console.log("made a new comment to submit");
     Contribute.$.ajax({
       url: 'http://localhost:3000/comments',
@@ -259,19 +272,73 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       xhrFields: {
          withCredentials: true
       }
-    }).done(function() {
+    }).done(function(response) {
+      newComment.set(response);
+      console.log(newComment);
       Contribute.app.commentsView.addOneComment(newComment);
+      Contribute.app.composeView.enableCommentEditing();
+      Contribute.app.composeView.showSubmitButton();
+      Contribute.app.composeView.clearCommentField();
     }).fail(function() {
 
     });
   },
+
+  hideSubmitButton: function() {
+    var $submitButton = Contribute.$('#contribute-submit-button');
+    $submitButton.hide();
+  },
+
+  showSubmitButton: function() {
+    var $submitButton = Contribute.$('#contribute-submit-button');
+    $submitButton.show();
+  },
+
+  disableCommentEditing: function() {
+    var $commentField = Contribute.$('#contribute-comment-field');
+    $commentField.removeAttr('contenteditable').blur();
+    var $loadingOverlay = Contribute.$('<div>');
+    $loadingOverlay.attr('id', 'contribute-loading-overlay');
+    $loadingOverlay.css({
+      position: 'absolute',
+      left: '0',
+      top: '0',
+      width: '100%',
+      height: '100%',
+      borderRadius: '2px',
+      backgroundColor: 'rgba(4, 4, 4, 0.05)'
+    });
+    var $loadingGif = Contribute.$('<img>');
+    $loadingGif.attr('src', 'http://localhost:3000/loader.gif');
+    $loadingGif.attr('id', 'contribute-loading-gif');
+    $loadingGif.css({
+      position: 'absolute',
+      left: 'calc(50% - 15px)',
+      top: 'calc(50% - 15px)',
+      width: '30px',
+      height: '30px%',
+    });
+    $commentField.append($loadingOverlay);
+    $commentField.append($loadingGif);
+  },
+
+  enableCommentEditing: function() {
+    var $commentField = Contribute.$('#contribute-comment-field');
+    $commentField.attr('contenteditable', 'true');
+    Contribute.$('#contribute-loading-overlay').remove();
+    Contribute.$('#contribute-loading-gif').remove();
+  },
+
+  clearCommentField: function() {
+    Contribute.$('#contribute-comment-field').html('');
+  }
 
 
 });
 
 Contribute.app.ReviewView = Contribute.Backbone.View.extend({
 
-  el: '#review-container',
+  el: '#contribute-review-container',
 
   events: {
     "click #contribute-submit-review-button" : "submitButtonPress"
@@ -290,20 +357,19 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
 
   toggleVisibility: function() {
     if (this.model.get("review_in_progress") === false) {
-      this.$el.hide();
+      this.$el.hide(400);
     } else {
-      this.$el.toggle(400);
+      this.$el.slideToggle(400);
     }
   },
 
   submitButtonPress: function(event) {
     event.preventDefault();
-    if (Contribute.$('#contribute-review-outcome-select').val() === null) {
+    if (Contribute.$('input[name=contribute-review]:checked', '#contribute-review-form').val() === undefined) {
       // Some action to prompt the user to select an option
-      console.log("You haven't entered any input");
     } else {
       // Otherwise call submitReview
-      this.model.set( 'review_result', Contribute.$('#contribute-review-outcome-select').val() );
+      this.model.set( 'review_result', $('input[name=contribute-review]:checked', '#contribute-review-form').val() );
       this.model.submitReview();
     }
   }
@@ -313,7 +379,7 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
 
 Contribute.app.ProfileView = Contribute.Backbone.View.extend({
 
-  el: '#profile-container',
+  el: '#contribute-profile-container',
 
   events: {
     "click #contribute-sign-in-button" : "requestSignIn",
@@ -325,7 +391,6 @@ Contribute.app.ProfileView = Contribute.Backbone.View.extend({
     this.render();
 
     this.model.on('change', function() {
-      console.log("was called");
       this.render();
     }, this);
 
@@ -338,7 +403,6 @@ Contribute.app.ProfileView = Contribute.Backbone.View.extend({
     // this.$el.append(template);
 
     if (this.model.get('is_signed_in') === true) {
-      console.log("this was called");
       // Render the signed in users profile
       var currentUserTemplate = _.template(Contribute.$('#profileViewTemplate').html() );
       this.$el.html(currentUserTemplate( this.model.toJSON() ));

@@ -9,5 +9,5 @@ class Comment < ActiveRecord::Base
 
   validates :contributor_id, presence: true
   validates :discussion_id, presence: true
-  validates :body_text, presence: true, length: { minimum: 5 }
+  validates :body_text, presence: true
 end

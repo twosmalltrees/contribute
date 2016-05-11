@@ -13,29 +13,34 @@ var Contribute = (function(window, undefined){
     {
       name: 'appViewTemplate',
       html:
-      '<div id="profile-container">' +
+      '<div id="contribute-header">' +
+        '<div id="contribute-logo">' +
+          'contribute.' +
+        '</div>' +
+        '<div id="contribute-profile-container">' +
+        '</div>' +
       '</div>' +
-      '<div id="compose-container">' +
+      '<div class="contribute-major-divider"></div>' +
+      '<div id="contribute-compose-container">' +
       '</div>' +
-      '<div id="review-container">' +
+      '<div id="contribute-review-container" hidden>' +
       '</div>' +
-      '<div id="comments-container">' +
+      '<div id="contribute-comments-container">' +
       '</div>'
     },
     {
       name: 'profileViewTemplate',
       html:
       '<div>' +
-        '<img src="http://www.fillmurray.com/100/100">' +
-        '<button type="submit" id="contribute-sign-out-button">Sign Out</button>' +
+        '<input type="submit" value="Sign Out" id="contribute-sign-out-button" class="contribute-button">' +
       '</div>'
     },
     {
       name: 'composeViewTemplate',
       html:
       '<div>' +
-        '<input id="contribute-comment-field">' +
-        '<button id="contribute-submit-button" type="submit">Submit</button>' +
+        '<div contenteditable="true" placeholder="Contribute to the conversation..." id="contribute-comment-field"></div>' +
+        '<button id="contribute-submit-button" type="submit" class="contribute-button">Submit Comment</button>' +
       '</div>'
     },
     {
@@ -47,7 +52,10 @@ var Contribute = (function(window, undefined){
     {
       name: 'commentViewTemplate',
       html:
-      '<div class="contribute-comment-body" style="' + Contribute.styles.contributeCommentBody.join('') + '">' +
+      '<div class="contribute-minor-divider"></div>' +
+      '<span class="contribute-comment-meta"><span class="contribute-strong-red">{{= contributor.username }}</span><span> | {{ if (created_at_readable) }}{{= created_at_readable }}</span></span>' +
+      '<span><img src="http://localhost:3000/chat.svg"></span>' +
+      '<div class="contribute-comment-body">' +
         '{{= body_text }}' +
       '</div>'
     },
@@ -55,28 +63,35 @@ var Contribute = (function(window, undefined){
       name: 'signInTemplate',
       html:
       '<form>' +
-          '<label>Username or Email</label><input type="text" id="contribute-username-email-field">' +
-          '<label>Password</label><input type="password" id="contribute-password-field">' +
-          '<button type="submit" id="contribute-sign-in-button">Sign In</button>' +
+          '<input placeholder="Username or Email" type="text" id="contribute-username-email-field" class="contribute-input-field" required>' +
+          '<input placeholder="Password" type="password" id="contribute-password-field" class="contribute-input-field" required>' +
+          '<input type="submit" value="Sign In" id="contribute-sign-in-button" class="contribute-button contribute-button-large">' +
       '</form>'
+
     },
     {
       name: 'reviewViewTemplate',
       html:
-      '<div id="contribute-review-body">' +
-      '{{= body_text }}' +
-      '</div>' +
-      '<div id="contribute-review-options">' +
-        '<form id="contribute-review-form">' +
-          '<select id="contribute-review-outcome-select" >' +
-            '<option disabled selected>Select an option</option>' +
-            '<option value="approved">Approved</option>' +
-            '<option value="rejected-1">Racial Vilification</option>' +
-            '<option value="rejected-2">Sexual Harassment</option>' +
-          '</select>' +
-          '<button type="submit" id="contribute-submit-review-button">Submit and Post Your Comment</button>' +
-        '</form>' +
+      '<div id="contribute-review-header">Contribute Community Moderation.</div>' +
+      '<div id="contribute-review-flex">' +
+        '<div id="contribute-review-body">' +
+          '{{= body_text }}' +
+        '</div>' +
+        '<div id="contribute-review-options">' +
+          '<div id="contribute-review-intro">Please check that this comment meets the Contribute community standards.</div>' +
+          '<div id="contribute-review-standards">From what you can tell, does the comment contain any of the following?</div>' +
+          '<form id="contribute-review-form">' +
+              '<label id="contribute-label">Advertising or Spam  </label><input name="contribute-review" type="radio" value="spam"></br>' +
+              '<label id="contribute-label">Racial Vilification  </label><input name="contribute-review" type="radio" value="error1"></br>' +
+              '<label id="contribute-label">Sexual Harassment  </label><input name="contribute-review" type="radio" value="error2"></br>' +
+              '<label id="contribute-label">Unreasonable Personal Attacks  </label><input name="contribute-review" type="radio" value="error3"></br>' +
+              '<label id="contribute-label">Encouragement of Violence  </label><input name="contribute-review" type="radio" value="error4"></br>' +
+              '<label id="contribute-label">No, it Contains None of the Above </label><input name="contribute-review" type="radio" value="okay"></br>' +
+            '<button type="submit" id="contribute-submit-review-button" class="contribute-button contribute-button-large">Submit Review & Post Your Comment</button>' +
+          '</form>' +
+        '</div>' +
       '</div>'
+
     }
   ];
 
