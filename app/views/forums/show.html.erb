@@ -4,7 +4,6 @@
     <tr>
       <th>Discussion Name</th>
       <th>Page URL</th>
-      <th>Unique ID</th>
     </tr>
   </thead>
   <tbody>
@@ -12,7 +11,6 @@
       <tr>
         <td><%= discussion.name %></td>
         <td><%= discussion.page_url %></td>
-        <td><%= discussion.unique_identifier %></td>
         <td><%= link_to "View Discussion", forum_discussion_path( @forum, discussion ) %></td>
       </tr>
     <% end %>

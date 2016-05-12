@@ -5,8 +5,7 @@
     <tr>
       <th>Root Domain</th>
       <th>Shortname</th>
-      <th>Recent Activity</th>
-      <th></th>
+      <th>Details</th>
     </tr>
   </thead>
   <tbody>
@@ -14,9 +13,25 @@
         <tr>
           <td><%= forum.root_domain %></td>
           <td><%= forum.forum_shortname %></td>
-          <td></td>
-          <td><%= link_to "View Details", forum_path( forum ) %></td>
+          <td><%= link_to "View Forum", forum_path( forum ) %></td>
         </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= button_to "Add New Forum", new_forum_path, {class: "btn btn-default", method: :get} %>
+
+</br>
+
+<h2 class="text-center">Embed Code</h2>
+<pre>
+&lt;script id="contribute-embed"&gt;
+  (function(){
+    var script = document.createElement('script');
+    script.src = 'https://contribute-app.herokuapp.com/embed.js'
+    script.async = true;
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  })();
+&lt;/script&gt;
+</pre>

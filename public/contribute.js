@@ -44,7 +44,9 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
   urlRoot: 'https://contribute-app.herokuapp.com/remote_current_contributor',
 
   defaults: {
-    is_signed_in: false
+    is_signed_in: false,
+    username: "unknown",
+    reputation: 0
   },
 
   initialize: function() {
@@ -62,7 +64,9 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
     }).done(function(response) {
         that.set(response);
         if (response !== null) {
-          that.set('is_signed_in', true);
+          that.set({ is_signed_in: true,
+                     username: response.username,
+                     reputation: response.reputation });
         }
        });
   },
@@ -140,10 +144,16 @@ Contribute.app.Comments = Contribute.Backbone.Collection.extend({
 
   initialize: function() {
 
-    this.fetch().done();
-
     this.on('sync', function() {
       Contribute.app.commentsView.render();
+    });
+
+    this.fetch().always(function(response) {
+      if (response.status === 404) {
+        var main = Contribute.$('#contribute-main');
+        var notRegisteredTemplate = Contribute.$('#domainNotRegisteredTemplate').html();
+        main.html(notRegisteredTemplate);
+      }
     });
 
   },
@@ -172,11 +182,18 @@ Contribute.app.CommentView = Contribute.Backbone.View.extend({
   tagName: 'div',
 
   render: function() {
-    var template = _.template( Contribute.$('#commentViewTemplate').html() );
-    this.$el.html(template( this.model.toJSON() ) );
-    return this;
+    // If comment is still awaiting review
+    if (this.model.get('status') === "pending" ) {
+      var pendingTemplate = _.template( Contribute.$('#pendingCommentTemplate').html() );
+      this.$el.html( pendingTemplate(this.model.toJSON() ) );
+      return this;
+    } else {
+      // If comment has been approved - render comment view template.
+      var template = _.template( Contribute.$('#commentViewTemplate').html() );
+      this.$el.html( template( this.model.toJSON() ) );
+      return this;
+    }
   }
-
 });
 
 
@@ -185,7 +202,13 @@ Contribute.app.CommentsView = Contribute.Backbone.View.extend({
   el: '#contribute-comments-container',
 
   render: function() {
-    this.addAllComments();
+    this.$el.html('');
+    if (Contribute.app.comments.length === 0) {
+      var noCommentsTemplate = Contribute.$('#noCommentsTemplate').html();
+      this.$el.append(noCommentsTemplate);
+    } else {
+      this.addAllComments();
+    }
   },
 
   addOneComment: function(comment) {
@@ -205,6 +228,7 @@ Contribute.app.CommentsView = Contribute.Backbone.View.extend({
 Contribute.app.ComposeView = Contribute.Backbone.View.extend({
   el: '#contribute-compose-container',
 
+
   events: {
     "click #contribute-submit-button" : "requestSubmitPermission"
   },
@@ -219,13 +243,13 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
     this.$el.append(template);
   },
 
+
   // Queries Contribute to check there is a current user session on the server side, and also
   // requests moderation of a community comment if required.
   requestSubmitPermission: function() {
 
     // If comment is completely empty, then return.
     var bodyText = Contribute.$('#contribute-comment-field').text();
-    console.log(bodyText);
     if (bodyText.trim().length === 0) {
       Contribute.$('#contribute-comment-field').html('');
       return;
@@ -259,7 +283,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 
   submitComment: function() {
     // Actually send off comment submission request.
-    var bodyText = Contribute.$('#contribute-comment-field').text();
+    var bodyText = document.getElementById('contribute-comment-field').innerText;
     var newComment = new Contribute.app.Comment({
       body_text: bodyText
     });
@@ -279,6 +303,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       Contribute.app.composeView.enableCommentEditing();
       Contribute.app.composeView.showSubmitButton();
       Contribute.app.composeView.clearCommentField();
+      Contribute.app.comments.fetch();
     }).fail(function() {
 
     });

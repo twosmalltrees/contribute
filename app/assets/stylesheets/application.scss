@@ -12,5 +12,17 @@
  *
  */
 
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+$navbar-default-bg: #A43E38;
+$border-radius-base: 0px;
+$navbar-default-border: none;
+$navbar-default-link-color: white;
+$headings-font-family: "Montserrat";
+$headings-line-height: 1.5;
+$headings-color: #A43E38;
+
 @import "bootstrap-sprockets";
 @import "bootstrap";
+@import "font-awesome";
+@import "local";

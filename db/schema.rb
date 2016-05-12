@@ -11,23 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511055042) do
+ActiveRecord::Schema.define(version: 20160512091055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "comments", force: :cascade do |t|
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.integer  "contributor_id",                          null: false
-    t.integer  "discussion_id",                           null: false
-    t.boolean  "pending",             default: true
-    t.boolean  "removed",             default: false
-    t.string   "status",              default: "pending"
-    t.boolean  "is_reply",            default: false
-    t.integer  "reply_to"
-    t.text     "body_text",                               null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.integer  "contributor_id",                             null: false
+    t.integer  "discussion_id",                              null: false
+    t.string   "status",                 default: "pending"
+    t.text     "body_text",                                  null: false
     t.string   "created_at_readable"
+    t.integer  "accepted_review_streak", default: 0
+    t.integer  "review_count",           default: 0
   end
 
   create_table "contributors", force: :cascade do |t|
@@ -41,11 +39,10 @@ ActiveRecord::Schema.define(version: 20160511055042) do
   end
 
   create_table "discussions", force: :cascade do |t|
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.string   "forum_id",          null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "forum_id",   null: false
     t.string   "page_url"
-    t.string   "unique_identifier", null: false
     t.string   "name"
   end
 

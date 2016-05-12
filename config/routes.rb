@@ -7,10 +7,10 @@ Rails.application.routes.draw do
                                          passwords: "host_users/passwords"}
 
   root to: 'static_pages#home'
-  get '/about', to: 'static_pages#about', as: 'about'
   get '/sign_in_prompt', to: 'static_pages#sign_in_prompt', as: 'sign_in_prompt'
   get '/sign_in', to: 'sessions#new', as: 'contributor_sign_in'
   post '/sign_in', to: 'sessions#create', as: 'new_contributor_session'
+  get '/sign_up', to: 'contributors#new', as: 'sign_up'
   get '/request_submit_permission', to: 'comments#request_submit_permission'
   post '/remote_sign_in', to: 'sessions#create_remote'
   delete '/remote_sign_in', to: 'sessions#destroy_remote'
@@ -24,6 +24,6 @@ Rails.application.routes.draw do
     resources :discussions
   end
 
-  resources :contributors, only: [:new, :create]
+  resources :contributors, only: [:new, :create, :show]
 
 end

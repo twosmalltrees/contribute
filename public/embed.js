@@ -2,13 +2,6 @@ var Contribute = (function(window, undefined){
 
   var Contribute = {};
 
-  Contribute.styles = {
-    contributeCommentBody: [
-      'color: red;',
-      'background-color: blue;'
-    ],
-  };
-
   Contribute.templates = [
     {
       name: 'appViewTemplate',
@@ -31,7 +24,8 @@ var Contribute = (function(window, undefined){
     {
       name: 'profileViewTemplate',
       html:
-      '<div>' +
+      '<div id="contribute-profile-view">' +
+        '<span class="contribute-profile-text">Logged in as: </span><span class="contribute-profile-big">{{= username }}</span><span class="contribute-profile-text"> Reputation: </span><span class="contribute-profile-big">{{= reputation }}</span>'+
         '<input type="submit" value="Sign Out" id="contribute-sign-out-button" class="contribute-button">' +
       '</div>'
     },
@@ -54,9 +48,32 @@ var Contribute = (function(window, undefined){
       html:
       '<div class="contribute-minor-divider"></div>' +
       '<span class="contribute-comment-meta"><span class="contribute-strong-red">{{= contributor.username }}</span><span> | {{ if (created_at_readable) }}{{= created_at_readable }}</span></span>' +
-      '<span><img src="https://contribute-app.herokuapp.com/chat.svg"></span>' +
       '<div class="contribute-comment-body">' +
         '{{= body_text }}' +
+      '</div>'
+    },
+    {
+      name: 'pendingCommentTemplate',
+      html:
+      '<div class="contribute-minor-divider"></div>' +
+      '<span class="contribute-comment-meta"><span class="contribute-strong-red">{{= contributor.username }}</span><span> | {{ if (created_at_readable) }}{{= created_at_readable }}</span></span>' +
+      '<div class="contribute-comment-body">' +
+        '<i>This comment is awaiting review through our community moderation system.' +
+      '</div>'
+    },
+    {
+      name: 'noCommentsTemplate',
+      html:
+      '<div id="contribute-no-comment">' +
+        'Nothing to see here... Why don\'t you leave a comment?' +
+      '</div>'
+    },
+    {
+      name: 'domainNotRegisteredTemplate',
+      html:
+      '<div id="contribute-not-registered">' +
+      '<div id="contribute-not-registered-logo">Contribute</div>' +
+        '<div id="contribute-not-registered-msg">It seems that this domain hasn\'t been registered yet. Visit <a id="contribute-link" href="https://contribute-app.herokuapp.com" target="_blank" >Contribute</a> to get things set up.</div>' +
       '</div>'
     },
     {
@@ -86,7 +103,7 @@ var Contribute = (function(window, undefined){
               '<label id="contribute-label">Sexual Harassment  </label><input name="contribute-review" type="radio" value="error2"></br>' +
               '<label id="contribute-label">Unreasonable Personal Attacks  </label><input name="contribute-review" type="radio" value="error3"></br>' +
               '<label id="contribute-label">Encouragement of Violence  </label><input name="contribute-review" type="radio" value="error4"></br>' +
-              '<label id="contribute-label">No, it Contains None of the Above </label><input name="contribute-review" type="radio" value="okay"></br>' +
+              '<label id="contribute-label">No, it Contains None of the Above </label><input name="contribute-review" type="radio" value="accepted"></br>' +
             '<button type="submit" id="contribute-submit-review-button" class="contribute-button contribute-button-large">Submit Review & Post Your Comment</button>' +
           '</form>' +
         '</div>' +
@@ -95,10 +112,26 @@ var Contribute = (function(window, undefined){
     }
   ];
 
+ // Thanks to Ben Vinegar and Anton Kovalyov for much of the code below, which has been
+ // adapted from examples in their book 'Third Party JavaScript'
+
+  var loadStylesheet = function(url) {
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = url;
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(link, entry);
+  };
+
   var loadSupportingFiles = function(callback) {
-    loadScript('https://contribute-app.herokuapp.com/jquery.js', function() {
-      loadScript('https://contribute-app.herokuapp.com/underscore+backbone.js', callback);
-    });
+    loadStylesheet('https://contribute-app.herokuapp.com/contribute.css');
+    // Dirty fix to stop the flash of unstyled content
+    setTimeout(function() {
+      loadScript('https://contribute-app.herokuapp.com/jquery.js', function() {
+        loadScript('https://contribute-app.herokuapp.com/underscore+backbone.js', callback);
+      });
+    }, 100);
   };
 
   var loadScript = function(url, callback) {
@@ -121,6 +154,7 @@ var Contribute = (function(window, undefined){
   };
 
   loadSupportingFiles(function() {
+
     loadScript('https://contribute-app.herokuapp.com/contribute.js', function() {
         var div = document.createElement('div');
         Contribute.$(div).attr('id', 'contribute-main');

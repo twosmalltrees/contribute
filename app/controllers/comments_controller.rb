@@ -3,14 +3,30 @@ class CommentsController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:create]
 
   def index
-   @comments = Discussion.find_by_page_url( request.referer ).comments.order(created_at: :asc)
-   render json: @comments.as_json(only: [:body_text, :created_at_readable, :id, :status], include: { contributor: {only: :username} })
+   forum = Forum.find_by_root_domain( request.headers['origin'] )
+   if forum
+     discussion = Discussion.find_by_page_url( request.referer )
+     if discussion
+       @comments = discussion.comments.order(created_at: :asc)
+       render json: @comments.as_json(only: [:body_text, :created_at_readable, :id, :status], include: { contributor: {only: :username} })
+     else
+       newDiscussion = Discussion.new(forum_id: forum.id, page_url: request.referer)
+       if newDiscussion.save
+         @comments = newDiscussion.comments.order(created_at: :asc)
+         render json: @comments.as_json(only: [:body_text, :created_at_readable, :id, :status], include: { contributor: {only: :username} })
+       else
+         render status: 500
+       end
+     end
+   else
+     render json: 'Forum Not Found', status: 404
+   end
   end
 
   # Tests to check that there is a currently logged in user, and also determines if any contribute-submit-button
   # to community moderation is required on this submission.
   def request_submit_permission
-    @comment_for_review = Comment.under_review.last
+    @comment_for_review = Comment.under_review.first
     is_signed_in = true if @current_contributor
     if @comment_for_review
       # If there's a comment in queue for review, return below
@@ -33,7 +49,14 @@ class CommentsController < ApplicationController
     currentDiscussion = Discussion.find_by_page_url( request.referer )
 
     comment = Comment.new(contributor_id: @current_contributor.id, discussion_id: currentDiscussion.id, body_text: params[:body_text], created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
-    # MORE LOGIC TO DETERMINE STATUS ETC BASED ON USERS REPUTATION...
+
+    # If the current contributor has a reputation over 100, the comment is automatically approved.
+    if @current_contributor.reputation >= 100
+      comment.status = "approved"
+      @current_contributor.reputation += 10
+      @current_contributor.save
+    end
+
     if comment.save
       render json: comment.as_json(only: [:body_text, :created_at_readable, :id], include: { contributor: {only: [:username, :reputation]} })
     else

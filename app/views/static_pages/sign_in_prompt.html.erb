@@ -1,2 +1,13 @@
-<h2 class="text-center"><%= link_to "Contributor Sign In", contributor_sign_in_path %></h2>
-<h2 class="text-center"><%= link_to "Host Sign In", new_host_user_session_path %></h2>
+<div id="sign-in-prompt">
+  <h2 class="text-center">
+    <%= link_to(new_host_user_session_path) do %>
+      <%= fa_icon "briefcase", text: "Host" %>
+    <% end %>
+  </h2>
+
+  <h2 class="text-center">
+    <%= link_to(contributor_sign_in_path) do %>
+      <%= fa_icon "pencil", text: "Contributor" %>
+    <% end %>
+  </h2>
+</div>
