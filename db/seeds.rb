@@ -37,12 +37,12 @@ admin_user.save
   forum.save
   # Create some discussions
   Random.rand(2..20).times do
-    discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain), unique_identifier: Faker::Code.isbn)
+    discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain))
     discussion.save
 
     # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
     Random.rand(0..20).times do
-      comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
+      comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
       comment.save
     end
   end
@@ -58,11 +58,11 @@ end
     forum.save
     # Create Discussions for each Forum
     Random.rand(2..20).times do
-      discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain), unique_identifier: Faker::Code.isbn)
+      discussion = Discussion.new(forum_id: forum.id, page_url: Faker::Internet.url(forum.root_domain))
       discussion.save
       # Create a bunch of comments for each discussion. In this case they are assumed as not pending,a nd with status approved
       Random.rand(0..20).times do
-        comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, pending: false, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
+        comment = Comment.new(discussion_id: discussion.id, contributor_id: allContributors[Random.rand(0..allContributors.count-1)].id, body_text: Faker::Lorem.paragraph, created_at_readable: Time.now.strftime("%B %-d %Y, %-l:%M%P"))
         comment.save
       end
     end

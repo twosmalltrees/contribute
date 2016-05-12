@@ -13,6 +13,5 @@ RSpec.describe Discussion, type: :model do
   # TEST FOR PRESENCE OF DB COLUMNS
   it {should have_db_column(:forum_id).of_type(:integer).with_options(null: false)}
   it {should have_db_column(:page_url).of_type(:string)}
-  it {should have_db_column(:unique_identifier).of_type(:string).with_options(null: false)}
 
 end
