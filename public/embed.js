@@ -126,7 +126,6 @@ var Contribute = (function(window, undefined){
 
   var loadSupportingFiles = function(callback) {
     loadStylesheet('https://contribute-app.herokuapp.com/contribute.css');
-    // Dirty fix to stop the flash of unstyled content
     setTimeout(function() {
       loadScript('https://contribute-app.herokuapp.com/jquery.js', function() {
         loadScript('https://contribute-app.herokuapp.com/underscore+backbone.js', callback);
@@ -162,6 +161,7 @@ var Contribute = (function(window, undefined){
         appendTo.parentNode.insertBefore(div, appendTo);
 
         // Load in templates for Backbone
+
         _.each(Contribute.templates, function(template) {
           var script = document.createElement('script');
           Contribute.$(script).attr('id', template.name);

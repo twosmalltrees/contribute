@@ -17,7 +17,7 @@ Contribute.app.Session = Contribute.Backbone.Model.extend({
         password: password,
       },
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(function() {
       Contribute.app.contributor.getCurrentContributor();
@@ -29,9 +29,11 @@ Contribute.app.Session = Contribute.Backbone.Model.extend({
       url: 'https://contribute-app.herokuapp.com/remote_sign_in',
       type: 'POST',
       dataType: "json",
-      data: {"_method":"delete"},
+      data: {
+        "_method": "delete"
+      },
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(
       Contribute.app.contributor.clearCurrentContributor
@@ -59,16 +61,18 @@ Contribute.app.Contributor = Contribute.Backbone.Model.extend({
       url: 'https://contribute-app.herokuapp.com/remote_current_contributor',
       type: 'GET',
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(function(response) {
-        that.set(response);
-        if (response !== null) {
-          that.set({ is_signed_in: true,
-                     username: response.username,
-                     reputation: response.reputation });
-        }
-       });
+      that.set(response);
+      if (response !== null) {
+        that.set({
+          is_signed_in: true,
+          username: response.username,
+          reputation: response.reputation
+        });
+      }
+    });
   },
 
   clearCurrentContributor: function() {
@@ -81,7 +85,6 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
 
   initialize: function() {
     this.on("change", function() {
-      console.log("Review model change function called");
       Contribute.app.reviewView.render();
     });
   },
@@ -94,9 +97,6 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
   },
 
   submitReview: function() {
-    console.log(this.attributes);
-
-
     // Submit the review
     // Need to find some way of verifying authenticity of submitted reviews...
     Contribute.$.ajax({
@@ -107,18 +107,17 @@ Contribute.app.Review = Contribute.Backbone.Model.extend({
         review_result: Contribute.app.review.get("review_result"),
       },
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(function() {
       // When review sucessfully submitted, then submit the contributors comment.
-      console.log("was this succssessful?");
       // Reset review to defaults
       Contribute.app.review.set({
-          review_in_progress: false,
-          comment_id: null,
-          body_text: null,
-          review_result: null
-        });
+        review_in_progress: false,
+        comment_id: null,
+        body_text: null,
+        review_result: null
+      });
       // Submit the comment
       Contribute.app.composeView.submitComment();
     }).fail(function() {
@@ -183,14 +182,14 @@ Contribute.app.CommentView = Contribute.Backbone.View.extend({
 
   render: function() {
     // If comment is still awaiting review
-    if (this.model.get('status') === "pending" ) {
-      var pendingTemplate = _.template( Contribute.$('#pendingCommentTemplate').html() );
-      this.$el.html( pendingTemplate(this.model.toJSON() ) );
+    if (this.model.get('status') === "pending") {
+      var pendingTemplate = _.template(Contribute.$('#pendingCommentTemplate').html());
+      this.$el.html(pendingTemplate(this.model.toJSON()));
       return this;
     } else {
       // If comment has been approved - render comment view template.
-      var template = _.template( Contribute.$('#commentViewTemplate').html() );
-      this.$el.html( template( this.model.toJSON() ) );
+      var template = _.template(Contribute.$('#commentViewTemplate').html());
+      this.$el.html(template(this.model.toJSON()));
       return this;
     }
   }
@@ -212,7 +211,9 @@ Contribute.app.CommentsView = Contribute.Backbone.View.extend({
   },
 
   addOneComment: function(comment) {
-    comment = new Contribute.app.CommentView({ model: comment });
+    comment = new Contribute.app.CommentView({
+      model: comment
+    });
     this.$el.prepend(comment.render().el);
   },
 
@@ -230,7 +231,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
 
 
   events: {
-    "click #contribute-submit-button" : "requestSubmitPermission"
+    "click #contribute-submit-button": "requestSubmitPermission"
   },
 
   initialize: function() {
@@ -259,12 +260,11 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       url: 'https://contribute-app.herokuapp.com/request_submit_permission',
       type: 'GET',
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(function(response) {
       if (response.review_required === true && response.contributor_signed_in === true) {
         // If commununity moderation contribution required, create new Review view.
-        console.log("Congratulations, you have been selected to conduct a review!");
         Contribute.app.composeView.hideSubmitButton();
         Contribute.app.composeView.disableCommentEditing();
         Contribute.app.review.set({
@@ -288,17 +288,15 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       body_text: bodyText
     });
 
-    console.log("made a new comment to submit");
     Contribute.$.ajax({
       url: 'https://contribute-app.herokuapp.com/comments',
       type: 'POST',
       data: newComment.attributes,
       xhrFields: {
-         withCredentials: true
+        withCredentials: true
       }
     }).done(function(response) {
       newComment.set(response);
-      console.log(newComment);
       Contribute.app.commentsView.addOneComment(newComment);
       Contribute.app.composeView.enableCommentEditing();
       Contribute.app.composeView.showSubmitButton();
@@ -333,6 +331,7 @@ Contribute.app.ComposeView = Contribute.Backbone.View.extend({
       borderRadius: '2px',
       backgroundColor: 'rgba(4, 4, 4, 0.05)'
     });
+    
     var $loadingGif = Contribute.$('<img>');
     $loadingGif.attr('src', 'https://contribute-app.herokuapp.com/loader.gif');
     $loadingGif.attr('id', 'contribute-loading-gif');
@@ -366,7 +365,7 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
   el: '#contribute-review-container',
 
   events: {
-    "click #contribute-submit-review-button" : "submitButtonPress"
+    "click #contribute-submit-review-button": "submitButtonPress"
   },
 
   initialize: function() {
@@ -375,8 +374,8 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
 
   render: function() {
     this.$el.html('');
-    var template = _.template( Contribute.$("#reviewViewTemplate").html() );
-    this.$el.html( template( this.model.toJSON() ) );
+    var template = _.template(Contribute.$("#reviewViewTemplate").html());
+    this.$el.html(template(this.model.toJSON()));
     this.toggleVisibility();
   },
 
@@ -394,7 +393,7 @@ Contribute.app.ReviewView = Contribute.Backbone.View.extend({
       // Some action to prompt the user to select an option
     } else {
       // Otherwise call submitReview
-      this.model.set( 'review_result', $('input[name=contribute-review]:checked', '#contribute-review-form').val() );
+      this.model.set('review_result', $('input[name=contribute-review]:checked', '#contribute-review-form').val());
       this.model.submitReview();
     }
   }
@@ -407,8 +406,8 @@ Contribute.app.ProfileView = Contribute.Backbone.View.extend({
   el: '#contribute-profile-container',
 
   events: {
-    "click #contribute-sign-in-button" : "requestSignIn",
-    "click #contribute-sign-out-button" : "requestSignOut"
+    "click #contribute-sign-in-button": "requestSignIn",
+    "click #contribute-sign-out-button": "requestSignOut"
   },
 
   initialize: function() {
@@ -429,8 +428,8 @@ Contribute.app.ProfileView = Contribute.Backbone.View.extend({
 
     if (this.model.get('is_signed_in') === true) {
       // Render the signed in users profile
-      var currentUserTemplate = _.template(Contribute.$('#profileViewTemplate').html() );
-      this.$el.html(currentUserTemplate( this.model.toJSON() ));
+      var currentUserTemplate = _.template(Contribute.$('#profileViewTemplate').html());
+      this.$el.html(currentUserTemplate(this.model.toJSON()));
     } else {
       // Display sign_in_prompt/form
       var signInTemplate = Contribute.$('#signInTemplate').html();
