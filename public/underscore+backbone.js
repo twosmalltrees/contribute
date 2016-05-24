@@ -11,9 +11,3 @@
 
     var Contribute = Contribute || {};
     Contribute.Backbone = Backbone.noConflict();
-
-    Contribute.Backbone.setDomLibrary = function(lib) {
-      $ = lib;
-    };
-
-    Contribute.Backbone.setDomLibrary(Contribute.$);
